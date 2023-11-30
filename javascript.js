@@ -2,6 +2,8 @@
 
 
 
+
+
 function getComputerChoice(){ 
     const choices = ["Rock" , "Paper", "Scissors"]
     let randomChoice = choices[Math.floor(Math.random() * 3)]
@@ -9,88 +11,158 @@ function getComputerChoice(){
 }
 
 
-
-
-function caseInsensitize(string){
-    let casePlayerSelection = string.toLowerCase()
-    let firstCap = casePlayerSelection[0].toUpperCase()
-    let cleanChoice = casePlayerSelection.replace(casePlayerSelection[0], firstCap)
-    return cleanChoice
-}
-
-
-function getPlayerChoice(){
-    let playerInput = prompt("Choose Rock, Paper, or Scissors")
-
-    if (playerInput){
-        playerInput = caseInsensitize(playerInput)
-    }
-
-    if ((playerInput != "Rock" && playerInput != "Paper" && playerInput != "Scissors") || playerInput === undefined){
-        alert("Please pick a valid choice")
-        return getPlayerChoice()
-    }
-
- 
-    return playerInput
-}
+let playerScore = 0;
+let compScore = 0;
+let roundCount = 0
 
 
 
+const rockBtn = document.querySelector("rock")
+const paperBtn = document.querySelector("paper")
+const scissorsBtn = document.querySelector("scissors")
+const buttons = document.querySelectorAll('button')
+let resultsDiv = document.querySelector(".results")
 
-// let computerSelection = getComputerChoice()
-// let playerSelection = getPlayerChoice()
+let roundWinnerEl = document.querySelector(".roundwinner")
+let scoreEl = document.querySelector("score")
+let playerScoreEl = document.querySelector(".playerscoreEl")
+let compScoreEl = document.querySelector(".computerScore")
+
+
+console.log(roundWinnerEl)
+
+
 
 
 function playRound(computerSelection, playerSelection){
-    let playerWin 
+    let winner
+
     if (computerSelection === playerSelection){
-        alert(`It's a draw. You both chose ${computerSelection}`)
-        return `It's a draw. You both chose ${computerSelection}`
+        winner = "it's a draw"
     } else if ((playerSelection === "Rock" && computerSelection === "Scissors") || (playerSelection === "Paper" && computerSelection === "Rock") || (playerSelection === "Scissors" && computerSelection === "Paper")){
-        alert(`You win! ${playerSelection} beats ${computerSelection}`)
-        playerWin = true
-        return playerWin
+        winner = "player"
     } else if ((playerSelection === "Scissors" && computerSelection === "Rock") || (playerSelection === "Rock" && computerSelection === "Paper") || (playerSelection === "Paper" && computerSelection === "Scissors")){
-        alert(`You lose! ${computerSelection} beats ${playerSelection}`)
-        playerWin = false
-        return playerWin
-        
+        winner = "computer"        
     }   
+    return winner
 }
 
 
-// console.log(playRound(computerSelection, playerSelection))
+
+
+// function handleClick(){
+//     buttonChoices.forEach(function(button){
+//         //for each button listen for click, match evt target to player selection var,  
+
+//         button.addEventListener("click", function(evt){
+//             playerSelection = evt.target.innerText
+//             computerSelection = getComputerChoice()
+//             playRound(playerSelection,computerSelection)
+//         })
+//     })
+// }
+
+
+
+
+function handleClick(evt) {
+    const playerChoice = evt.target.innerText;
+    const computerChoice = getComputerChoice();
+    const roundWinner = playRound(playerChoice, computerChoice);
+    playerScoreEl.textContent = playerScore
+    compScoreEl.textContent = compScore
+    // Update scores based on the round result (assuming playerScore and compScore are global variables)
+    if (roundWinner === "player") {
+        playerScore++;
+        let result = `Player chose: ${playerChoice}, Computer chose: ${computerChoice} Round Winner: ${roundWinner}`
+        roundWinnerEl.textContent = result
+        playerScoreEl.textContent = playerScore
+        compScoreEl.textContent = compScore
+    } else if (roundWinner === "computer") {
+        compScore++;
+        let result = `Player chose: ${playerChoice}, Computer chose: ${computerChoice} Round Winner: ${roundWinner}`
+
+        roundWinnerEl.textContent = result
+        playerScoreEl.textContent = playerScore
+        compScoreEl.textContent = compScore
+    } else {
+        let result = `Both players chose: ${playerChoice}, it's a draw.`
+        roundWinnerEl.textContent = result
+        playerScoreEl.textContent = playerScore
+        compScoreEl.textContent = compScore
+    }
+
+    // Display or handle the result as needed
+    // console.log(`Player chose: ${playerChoice}, Computer chose: ${computerChoice}`);
+    // console.log(`Round Winner: ${roundWinner}`);
+    // console.log(`Player Score: ${playerScore}, Computer Score: ${compScore}`);
+
+    // Increment roundCount
+    roundCount++;
+
+    // Check if 5 rounds are completed
+    if (roundCount === 5) {
+        let createdResults = document.createElement("h1")
+        resultsDiv.appendChild(createdResults)
+        if (playerScore > compScore) {
+            console.log("YOU WIN THE GAME");
+            let result = `You won the game! Your score is ${playerScore}, the computer's score is ${compScore}`
+            createdResults.textContent = result
+            return result;
+        } else if (playerScore < compScore) {
+            console.log("YOU LOSE THE GAME");
+            let result = `You lost the game. Your score is ${playerScore}, the computer's score is ${compScore}`
+            createdResults.textContent = result
+            return result
+        } else {
+            let result = `It's a tie - both scores are ${playerScore}`
+            createdResults.textContent = result
+            return result
+        }
+    }
+}
+
+
+
+
+
+
+
 
 
 function game(){
-    let playerScore = 0
-    let compScore = 0
-
-    for (i = 0; i < 5; i++){
-        let computerSelection = getComputerChoice()
-        let playerSelection = getPlayerChoice()
-        if (playRound(computerSelection, playerSelection) === true){
-            playerScore++
+    let finalResult
+    // Get player's choice and play 5 round
+    if (roundCount === 5){
+        if (playerScore > compScore) {
+            console.log("YOU WIN THE GAME");
+            finalResult = `You win the game! Your score is ${playerScore}, the computer's score is ${compScore}`
+            return finalResult;
+        } else if (playerScore < compScore) {
+            console.log("YOU LOSE THE GAME");
+            finalResult = `You lost the game. Your score is ${playerScore}, the computer's score is ${compScore}`
+            return finalResult;
         } else {
-            compScore++
+            console.log();
+            finalResult = `It's a tie - both scores are ${playerScore}`
+            return finalResult
         }
+    
     }
-
-    if (playerScore > compScore){
-        return `You win the game! Your score is ${playerScore}, the computer's score is ${compScore}`
-    } else if (playerScore < compScore){
-        return `You lost the game. Your score is ${playerScore}, the computer's score is ${compScore}`
-    } else{
-        return `It's a tie. Both players' score is ${playerScore}`
-    }
+    
+    buttons.forEach(function (button) {
+        button.addEventListener("click", handleClick);
+    });
 
 }
 
 
-console.log(game())
 
-//play a game, using previous function to play 5 rounds.
+
+
+    
+
+game()
 
 
 
